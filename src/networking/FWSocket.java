@@ -2,6 +2,7 @@ package networking;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -41,15 +42,34 @@ public class FWSocket {
         }
     }
     
-    public void send(Object obj) {
+    public void send(FWTP packet) {
         try {
-            this.out.writeObject(obj);
+            this.out.writeObject(packet.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public FWTP receive() {
-        return new FWTP();
+        try {
+            String packet = (String) this.in.readObject();
+            String[] parts = packet.split("\\|");
+            ActionType type = ActionType.valueOf(parts[0]);
+            // Type can be HANDSHAKE_INIT, HANDSHAKE_ACK, ERROR, PUT
+            Object obj = null;
+            if(parts.length > 1) {
+                if(type == ActionType.HANDSHAKE_INIT || type == ActionType.HANDSHAKE_ACK) {
+                    obj = parts[1];
+                } else if(type == ActionType.ERROR) {
+                    obj = parts[1];
+                } else if(type == ActionType.PUT) {
+                    obj = Integer.parseInt(parts[1]);
+                }
+            }
+            
+            return new FWTP(type, obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
