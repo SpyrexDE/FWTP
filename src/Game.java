@@ -1,5 +1,7 @@
 import cli.Cli;
+import networking.ActionType;
 import networking.FWSocket;
+import networking.FWTP;
 
 public class Game {
     
@@ -19,6 +21,7 @@ public class Game {
         this.cli = cli;
 
         try {
+            System.out.println("Trying to connect...");
             this.socket = new FWSocket("localhost", 4444);
             this.socket.connect();
         } catch (Exception e) {
@@ -56,7 +59,7 @@ public class Game {
         }
 
         // send to clients
-        socket.send(position);
+        socket.send(new FWTP(ActionType.EINWURF, position));
     }
 
     public int getFieldWidth() {

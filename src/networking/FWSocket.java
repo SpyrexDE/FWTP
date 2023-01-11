@@ -55,14 +55,13 @@ public class FWSocket {
             String packet = (String) this.in.readObject();
             String[] parts = packet.split("\\|");
             ActionType type = ActionType.valueOf(parts[0]);
-            // Type can be HANDSHAKE_INIT, HANDSHAKE_ACK, ERROR, PUT
             Object obj = null;
             if(parts.length > 1) {
                 if(type == ActionType.HANDSHAKE_INIT || type == ActionType.HANDSHAKE_ACK) {
                     obj = parts[1];
-                } else if(type == ActionType.ERROR) {
-                    obj = parts[1];
-                } else if(type == ActionType.PUT) {
+                } else if(type == ActionType.FEHLER) {
+                    System.arraycopy(parts, 1, obj, 0, parts.length - 2);
+                } else if(type == ActionType.EINWURF) {
                     obj = Integer.parseInt(parts[1]);
                 }
             }
@@ -71,5 +70,6 @@ public class FWSocket {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 }
