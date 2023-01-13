@@ -37,7 +37,7 @@ public class Game {
             if(!myTurn) {
                 FWTP received = con.getSocket().receive();
                 if(received.type == ActionType.EINWURF) {
-                    put((Integer)received.obj, true);
+                    put((Integer)received.body, true);
                     turnCompleted = true;
                 }
                 if(received instanceof FWError) {
