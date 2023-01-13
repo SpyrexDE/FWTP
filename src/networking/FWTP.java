@@ -11,7 +11,7 @@ public class FWTP {
 
     public String toString() {
         if(obj instanceof String[]) {
-            return type.toString() + "|" + String.join(",", (String[]) obj);
+            return type.toString() + "|" + String.join("|", (String[]) obj);
         } else {
             return type.toString() + "|" + obj.toString();
         }

@@ -34,6 +34,8 @@ public class FWSocket {
             this.bIn = new BufferedReader(new InputStreamReader(this.in));
             this.bOut = new BufferedWriter(new OutputStreamWriter(this.out));
             this.connected = true;
+            // Send error that the host has an UNSUPPORTED_VERSION
+            this.send(new FWError(FWErrorType.UNSUPPORTED_VERSION, "Unsupported version"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +92,9 @@ public class FWSocket {
                 if(type == ActionType.HANDSHAKE_INIT || type == ActionType.HANDSHAKE_ACK) {
                     obj = parts[1];
                 } else if(type == ActionType.FEHLER) {
-                    System.arraycopy(parts, 1, obj, 0, parts.length - 2);
+                    obj = new String[parts.length - 1];
+                    System.arraycopy(parts, 1, obj, 0, parts.length - 1);
+                    return new FWError(obj);
                 } else if(type == ActionType.EINWURF) {
                     obj = Integer.parseInt(parts[1]);
                 }

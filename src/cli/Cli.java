@@ -53,4 +53,8 @@ public class Cli {
     public void print(String str) {
         System.out.println(str);
     }
+
+    public void error(String message, String value) {
+        System.out.println("\033[1;31m" + message + ":\n\033[0;31m" + value + "\033[0m");
+    }
 }

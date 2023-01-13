@@ -1,6 +1,8 @@
 import cli.Cli;
 import networking.ActionType;
 import networking.FWConnection;
+import networking.FWError;
+import networking.FWErrorType;
 import networking.FWTP;
 
 public class Game {
@@ -38,6 +40,11 @@ public class Game {
                     put((Integer)received.obj, true);
                     turnCompleted = true;
                 }
+                if(received instanceof FWError) {
+                    FWError error = (FWError) received;
+                    cli.error("Your opponent threw an error", "[" + error.type.toString() + "] " + error.message);
+                    break;
+                }
             } else {
                 try {
                     int input = Integer.parseInt(cli.getInput());
@@ -62,6 +69,10 @@ public class Game {
 
     public boolean put(int position, boolean enemy) {
         if(position < 1 || position > getFieldWidth()) {
+            if(enemy)
+                con.getSocket().send(new FWError(FWErrorType.INVALID_MOVE, "Invalid position"));
+            else
+                cli.error("Invalid position", "The position must be between 1 and " + getFieldWidth());
             return false;
         }
 
