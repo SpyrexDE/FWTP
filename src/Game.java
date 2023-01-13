@@ -1,9 +1,6 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import cli.Cli;
 import networking.ActionType;
-import networking.FWSocket;
+import networking.FWConnection;
 import networking.FWTP;
 
 public class Game {
@@ -18,72 +15,69 @@ public class Game {
     };
 
     private Cli cli;
-    private FWSocket socket;
-    private boolean hosting;
+    FWConnection con;
 
     public Game(Cli cli) {
         this.cli = cli;
 
-        try {
-            System.out.println("Enter a valid ip if you want to connect to someone, press enter to host: ");
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            String s = br.readLine();
-            this.socket = new FWSocket();
-
-            if(s.equals("")) {
-                this.socket.host();
-                this.hosting = true;
-            }
-            else {
-                this.socket.connect(s);
-                this.hosting = false;
-            }
-        } catch (Exception e) {
-            System.out.println("Failed to connect to peer");
-        }
+        this.con = new FWConnection(cli);
 
         gameLoop();
     }
 
     private void gameLoop() {
-
-        boolean myTurn = this.hosting;
-
+        boolean myTurn = con.isHosting();
+        boolean turnCompleted = false;
+    
+        cli.drawField(field);
+    
         while (true) {
-            cli.redraw(field);
-            
             if(!myTurn) {
-                FWTP received = socket.receive();
-                if(received.type == ActionType.EINWURF)
-                    put((Integer)received.obj, false);
+                FWTP received = con.getSocket().receive();
+                if(received.type == ActionType.EINWURF) {
+                    put((Integer)received.obj, true);
+                    turnCompleted = true;
+                }
             } else {
                 try {
                     int input = Integer.parseInt(cli.getInput());
-                    put(input, true);
+                    if(put(input, false)) {
+                        turnCompleted = true;
+                    }
                 } catch(Exception e) {
                     // pass
                 }
             }
-            myTurn = !myTurn;
+            if(turnCompleted) {
+                cli.redraw(field);
+                myTurn = !myTurn;
+                turnCompleted = false;
+            }
+            if(myTurn) {
+                turnCompleted = false;
+            }
         }
     }
+    
 
-    public void put(int position, boolean sync) {
+    public boolean put(int position, boolean enemy) {
         if(position < 1 || position > getFieldWidth()) {
-            return;
+            return false;
         }
 
         // put at the bottom
         for (int i = getFieldHeight() - 1; i >= 0; i--) {
             if(field[i][position - 1] == 0) {
-                field[i][position - 1] = 1;
+                field[i][position - 1] = enemy ? 2 : 1;
                 break;
             }
         }
 
         // send to clients
-        if(sync)
-            socket.send(new FWTP(ActionType.EINWURF, position));
+        if(!enemy)
+            con.getSocket().send(new FWTP(ActionType.EINWURF, position));
+        
+        return true;
     }
 
     public int getFieldWidth() {

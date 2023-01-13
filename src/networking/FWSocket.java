@@ -42,9 +42,10 @@ public class FWSocket {
     public void host() {
         try {
             System.out.println("Hosting on port: " + this.port);
-            ServerSocket server = new ServerSocket(this.port);
-            System.out.println("Hosting on IP: " + InetAddress.getLocalHost().getHostAddress());
-            this.socket = server.accept();
+            try (ServerSocket server = new ServerSocket(this.port)) {
+                System.out.println("Hosting on IP: " + InetAddress.getLocalHost().getHostAddress());
+                this.socket = server.accept();
+            }
             this.out = new ObjectOutputStream(this.socket.getOutputStream());
             this.in = new ObjectInputStream(this.socket.getInputStream());
             this.bIn = new BufferedReader(new InputStreamReader(this.in));
@@ -72,13 +73,14 @@ public class FWSocket {
         try {
             bOut.write(packet.toString() + "\n");
             bOut.flush();
-            System.out.println("Sent: " + packet.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public FWTP receive() {
+        if(!this.connected)
+            return null;
         try {
             String packet = bIn.readLine();
             String[] parts = packet.split("\\|");
