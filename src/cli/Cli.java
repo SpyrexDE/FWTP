@@ -2,12 +2,14 @@ package cli;
 
 import java.util.Scanner;
 
+import utils.Ansi;
+
 public class Cli {
 
     Scanner in = new Scanner(System.in);
 
     public Cli() {
-
+        
     }
 
     public void redraw(int[][] field) {
@@ -22,7 +24,8 @@ public class Cli {
 
     // Get terminal input
     public String getInput() {
-        print("Please enter a number: ");
+        // ◌
+        System.out.print(Ansi.Green.colorize("◉") + Ansi.Cyan.colorize(" Your turn 🔢 ➡ "));
         String input = in.nextLine();
         return input;
     }

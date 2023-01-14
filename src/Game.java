@@ -4,6 +4,7 @@ import networking.FWConnection;
 import networking.FWError;
 import networking.FWErrorType;
 import networking.FWTP;
+import utils.Ansi;
 
 public class Game {
     
@@ -22,7 +23,19 @@ public class Game {
     public Game(Cli cli) {
         this.cli = cli;
 
-        this.con = new FWConnection(cli);
+        // Establish connection
+        if(FourWins.args.length > 0) {
+            switch(FourWins.args[0]) {
+                case "host":
+                    this.con = new FWConnection(cli, true);
+                    break;
+                case "connect_local":
+                    this.con = new FWConnection(cli, false);
+                    break;
+            }
+        } else {
+            this.con = new FWConnection(cli);
+        }
 
         gameLoop();
     }
@@ -35,6 +48,8 @@ public class Game {
     
         while (true) {
             if(!myTurn) {
+                cli.print(Ansi.Red.colorize("◯") + Ansi.Yellow.colorize(" Waiting for opponent..."));
+
                 FWTP received = con.getSocket().receive();
                 if(received.type == ActionType.EINWURF) {
                     put((Integer)received.body, true);
@@ -59,7 +74,7 @@ public class Game {
                 int won = checkForWin(field);
                 if(won != 0) {
                     applyWinMarkers(field, won);
-                    cli.drawField(field, true);
+                    cli.redraw(field, false);
                     if(won == 1) {
                         cli.success("You won!", "Congratulations!");
                     } else {
@@ -206,12 +221,21 @@ public class Game {
         }
 
         // put at the bottom
+        boolean couldPlace = false;
         for (int i = getFieldHeight() - 1; i >= 0; i--) {
             // if the field is empty (not filled by player 1 or 2)
             if(field[i][position - 1] != 1 && field[i][position - 1] != 2) {
                 field[i][position - 1] = enemy ? 2 : 1;
+                couldPlace = true;
                 break;
             }
+        }
+        if(!couldPlace) {
+            if(enemy)
+                con.getSocket().send(new FWError(FWErrorType.INVALID_MOVE, "Column is full"));
+            else
+                cli.error("Column is full", "The column is full, please choose another one");
+            return false;
         }
 
         // send to clients

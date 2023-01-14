@@ -33,6 +33,22 @@ public class FWConnection {
         }
     }
 
+    public FWConnection(Cli cli, boolean host) {
+        try {
+            if(host) {
+                this.socket = new FWSocket();
+                this.socket.host();
+                this.hosting = true;
+            }else {
+                this.socket = new FWSocket();
+                this.socket.connect("localhost");
+                this.hosting = false;
+            }
+        } catch (Exception e) {
+            cli.print("Failed to connect to peer");
+        }
+    }
+
     public FWSocket getSocket() {
         return this.socket;
     }

@@ -6,16 +6,39 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "Launch FourWins",
+            "name": "Client",
             "request": "launch",
             "mainClass": "FourWins",
             "projectName": "FWTP_2c7990d"
+        },
+        {
+            "type": "java",
+            "name": "Local Server",
+            "request": "launch",
+            "mainClass": "FourWins",
+            "projectName": "FWTP_2c7990d",
+            "args": "host"
+        },
+        {
+            "type": "java",
+            "name": "Local Client",
+            "request": "launch",
+            "mainClass": "FourWins",
+            "projectName": "FWTP_2c7990d",
+            "args": "connect_local",
+            "preLaunchTask": "SleepDelay"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "2 Clients",
+            "configurations": ["Client", "Client"],
+            "stopAll": true
+        },
+        {
+            "name": "Client + Server",
+            "configurations": ["Local Server", "Local Client"],
+            "stopAll": true
         }
     ]
 }
