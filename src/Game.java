@@ -62,12 +62,12 @@ public class Game {
                 }
             } else {
                 try {
-                    int input = Integer.parseInt(cli.getInput());
+                    int input = Integer.parseInt(cli.getInput()) - 1;
                     if(put(input, false)) {
                         turnCompleted = true;
                     }
-                } catch(Exception e) {
-                    // pass
+                } catch(NumberFormatException e) {
+                    cli.error("Invalid input", "Please enter a number between 1 and 7");
                 }
             }
             if(turnCompleted) {
@@ -212,7 +212,7 @@ public class Game {
     }
 
     public boolean put(int position, boolean enemy) {
-        if(position < 1 || position > getFieldWidth()) {
+        if(position < 0 || position > getFieldWidth() - 1) {
             if(enemy)
                 con.getSocket().send(new FWError(FWErrorType.INVALID_MOVE, "Invalid position"));
             else
@@ -224,8 +224,8 @@ public class Game {
         boolean couldPlace = false;
         for (int i = getFieldHeight() - 1; i >= 0; i--) {
             // if the field is empty (not filled by player 1 or 2)
-            if(field[i][position - 1] != 1 && field[i][position - 1] != 2) {
-                field[i][position - 1] = enemy ? 2 : 1;
+            if(field[i][position] != 1 && field[i][position] != 2) {
+                field[i][position] = enemy ? 2 : 1;
                 couldPlace = true;
                 break;
             }

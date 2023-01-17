@@ -2,6 +2,7 @@ package networking;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -9,7 +10,10 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Arrays;
+
+import cli.Cli;
 
 
 // Class to connect to other clients and send them messages
@@ -56,11 +60,11 @@ public class FWSocket {
                 return;
             }
 
-
-
             this.connected = true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            Cli.error("Unknown host", "The host you tried to connect to is unknown");
+        } catch (IOException e) {
+            Cli.error("Connection failed", "The connection to the host failed");
         }
     }
 
@@ -97,7 +101,7 @@ public class FWSocket {
             System.out.println("Client connected using FWTP version: V" + this.FWTP_VERSION);
             this.connected = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Cli.error("Connection failed", "The connection to the host failed");
         }
     }
     
@@ -109,7 +113,7 @@ public class FWSocket {
                 this.socket.close();
             this.connected = false;
         } catch (Exception e) {
-            e.printStackTrace();
+            Cli.error("Disconnect failed", "The disconnect failed");
         }
     }
     
@@ -117,8 +121,8 @@ public class FWSocket {
         try {
             bOut.write(packet.toString() + "\n");
             bOut.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Cli.error("Failed sending package", "The package could not be sent");
         }
     }
 
@@ -140,8 +144,8 @@ public class FWSocket {
                 }
             }
             return new FWTP(type, obj);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Cli.error("Failed receiving package", "The package could not be received");
         }
         return null;
     }

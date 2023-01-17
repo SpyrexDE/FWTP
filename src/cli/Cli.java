@@ -70,11 +70,11 @@ public class Cli {
         System.out.println(str);
     }
 
-    public void error(String message, String value) {
+    public static void error(String message, String value) {
         System.out.println("\033[1;31m" + message + ":\n\033[0;31m" + value + "\033[0m");
     }
 
-    public void success(String message, String value) {
+    public static void success(String message, String value) {
         System.out.println("\033[1;32m" + message + ":\n\033[0;32m" + value + "\033[0m");
     }
 }
