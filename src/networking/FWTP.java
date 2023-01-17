@@ -13,7 +13,6 @@ public class FWTP {
         if(body instanceof String[]) {
             return type.ordinal() + "|" + String.join("|", (String[]) body);
         } else {
-            System.out.println("FWTP: " + type.ordinal() + "|" + body.toString() + "");
             return type.ordinal() + "|" + body.toString();
         }
     }

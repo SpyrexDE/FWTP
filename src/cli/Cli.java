@@ -36,6 +36,7 @@ public class Cli {
     }
 
     public void drawField(int[][] field, boolean draw_warning) {
+        System.out.println("\033[1;36m    ╰•★★ 𝓒𝓸𝓷𝓷𝓮𝓬𝓽 𝓕𝓸𝓾𝓻 ★★•╯    \033[0m");
         System.out.println("\033[1;36m ╭───┬───┬───┬───┬───┬───┬───╮ \033[0m");
         for (int i = 0; i < 6; i++) {
             System.out.print("\033[1;36m │");
