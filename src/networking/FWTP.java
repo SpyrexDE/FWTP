@@ -11,9 +11,10 @@ public class FWTP {
 
     public String toString() {
         if(body instanceof String[]) {
-            return type.toString() + "|" + String.join("|", (String[]) body);
+            return type.ordinal() + "|" + String.join("|", (String[]) body);
         } else {
-            return type.toString() + "|" + body.toString();
+            System.out.println("FWTP: " + type.ordinal() + "|" + body.toString() + "");
+            return type.ordinal() + "|" + body.toString();
         }
     }
 }

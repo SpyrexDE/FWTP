@@ -2,9 +2,9 @@ package networking;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -19,8 +19,8 @@ public class FWSocket {
 
     private Socket socket;
     private ServerSocket server;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private OutputStream out;
+    private InputStream in;
     private BufferedReader bIn;
     private BufferedWriter bOut;
     private boolean connected;
@@ -35,8 +35,8 @@ public class FWSocket {
             this.socket = new Socket(ip, this.port);
 
             // Setup streams
-            this.out = new ObjectOutputStream(this.socket.getOutputStream());
-            this.in = new ObjectInputStream(this.socket.getInputStream());
+            this.out = this.socket.getOutputStream();
+            this.in = this.socket.getInputStream();
             this.bIn = new BufferedReader(new InputStreamReader(this.in));
             this.bOut = new BufferedWriter(new OutputStreamWriter(this.out));
 
@@ -73,8 +73,8 @@ public class FWSocket {
                 this.socket = server.accept();
             }
             // Setup streams
-            this.out = new ObjectOutputStream(this.socket.getOutputStream());
-            this.in = new ObjectInputStream(this.socket.getInputStream());
+            this.out = this.socket.getOutputStream();
+            this.in = this.socket.getInputStream();
             this.bIn = new BufferedReader(new InputStreamReader(this.in));
             this.bOut = new BufferedWriter(new OutputStreamWriter(this.out));
 
@@ -126,7 +126,7 @@ public class FWSocket {
         try {
             String packet = bIn.readLine();
             String[] parts = packet.split("\\|");
-            ActionType type = ActionType.valueOf(parts[0]);
+            ActionType type = ActionType.values()[Integer.valueOf(parts[0])];
             Object obj = null;
             if(parts.length > 1) {
                 if(type == ActionType.HANDSHAKE_INIT || type == ActionType.HANDSHAKE_ACK) {
