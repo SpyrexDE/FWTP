@@ -135,11 +135,11 @@ public class FWSocket {
             if(parts.length > 1) {
                 if(type == ActionType.HANDSHAKE_INIT || type == ActionType.HANDSHAKE_ACK) {
                     obj = parts[1];
-                } else if(type == ActionType.FEHLER) {
+                } else if(type == ActionType.ERROR) {
                     obj = new String[parts.length - 1];
                     System.arraycopy(parts, 1, obj, 0, parts.length - 1);
                     return new FWError(obj);
-                } else if(type == ActionType.EINWURF) {
+                } else if(type == ActionType.PUT) {
                     obj = Integer.parseInt(parts[1]);
                 }
             }

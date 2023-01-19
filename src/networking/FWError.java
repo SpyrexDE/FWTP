@@ -5,13 +5,13 @@ public class FWError extends FWTP{
     public FWErrorType type;
 
     public FWError(FWErrorType type, String message) {
-        super(ActionType.FEHLER, new String[] {String.valueOf(type.ordinal()), message});
+        super(ActionType.ERROR, new String[] {String.valueOf(type.ordinal()), message});
         this.message = message;
         this.type = type;
     }
 
     public FWError(Object obj) {
-        super(ActionType.FEHLER, obj);
+        super(ActionType.ERROR, obj);
         String[] o = (String[]) obj;
         int errorCode = Integer.parseInt((String) o[0]);
 

@@ -3,6 +3,6 @@ package networking;
 public enum ActionType {
     HANDSHAKE_INIT,
     HANDSHAKE_ACK,
-    FEHLER,
-    EINWURF
+    ERROR,
+    PUT
 }

@@ -49,7 +49,7 @@ public class Game {
                 Cli.print(Ansi.Red.colorize("◯") + Ansi.Yellow.colorize(" Waiting for opponent..."));
 
                 FWTP received = con.getSocket().receive();
-                if(received.type == ActionType.EINWURF) {
+                if(received.type == ActionType.PUT) {
                     put((Integer)received.body, true);
                     turnCompleted = true;
                 }
@@ -238,7 +238,7 @@ public class Game {
 
         // send to clients
         if(!enemy)
-            con.getSocket().send(new FWTP(ActionType.EINWURF, position));
+            con.getSocket().send(new FWTP(ActionType.PUT, position));
         
         return true;
     }

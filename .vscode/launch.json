@@ -9,21 +9,21 @@
             "name": "Launch FourWins",
             "request": "launch",
             "mainClass": "FourWins",
-            "projectName": "FWTP_b84a0fbf"
+            "projectName": ""
         },
         {
             "type": "java",
             "name": "Client",
             "request": "launch",
             "mainClass": "FourWins",
-            "projectName": "FWTP_2c7990d"
+            "projectName": ""
         },
         {
             "type": "java",
             "name": "Local Server",
             "request": "launch",
             "mainClass": "FourWins",
-            "projectName": "FWTP_2c7990d",
+            "projectName": "",
             "args": "host"
         },
         {
@@ -31,7 +31,7 @@
             "name": "Local Client",
             "request": "launch",
             "mainClass": "FourWins",
-            "projectName": "FWTP_2c7990d",
+            "projectName": "",
             "args": "connect_local",
             "preLaunchTask": "SleepDelay"
         }
