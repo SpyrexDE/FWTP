@@ -17,24 +17,22 @@ public class Game {
         {0, 0, 0, 0, 0, 0, 0},
     };
 
-    private Cli cli;
     FWConnection con;
 
-    public Game(Cli cli) {
-        this.cli = cli;
+    public Game() {
 
         // Establish connection
         if(FourWins.args.length > 0) {
             switch(FourWins.args[0]) {
                 case "host":
-                    this.con = new FWConnection(cli, true);
+                    this.con = new FWConnection(true);
                     break;
                 case "connect_local":
-                    this.con = new FWConnection(cli, false);
+                    this.con = new FWConnection(false);
                     break;
             }
         } else {
-            this.con = new FWConnection(cli);
+            this.con = new FWConnection();
         }
 
         gameLoop();
@@ -44,11 +42,11 @@ public class Game {
         boolean myTurn = con.isHosting();
         boolean turnCompleted = false;
     
-        cli.drawField(field, true);
+        Cli.drawField(field, true);
     
         while (true) {
             if(!myTurn) {
-                cli.print(Ansi.Red.colorize("◯") + Ansi.Yellow.colorize(" Waiting for opponent..."));
+                Cli.print(Ansi.Red.colorize("◯") + Ansi.Yellow.colorize(" Waiting for opponent..."));
 
                 FWTP received = con.getSocket().receive();
                 if(received.type == ActionType.EINWURF) {
@@ -57,34 +55,34 @@ public class Game {
                 }
                 if(received instanceof FWError) {
                     FWError error = (FWError) received;
-                    cli.error("Your opponent threw an error", "[" + error.type.toString() + "] " + error.message);
+                    Cli.error("Your opponent threw an error", "[" + error.type.toString() + "] " + error.message);
                     break;
                 }
             } else {
                 try {
-                    int input = Integer.parseInt(cli.getInput()) - 1;
+                    int input = Integer.parseInt(Cli.getInput()) - 1;
                     if(put(input, false)) {
                         turnCompleted = true;
                     }
                 } catch(NumberFormatException e) {
-                    cli.error("Invalid input", "Please enter a number between 1 and 7");
+                    Cli.error("Invalid input", "Please enter a number between 1 and 7");
                 }
             }
             if(turnCompleted) {
                 int won = checkForWin(field);
                 if(won != 0) {
                     applyWinMarkers(field, won);
-                    cli.redraw(field, false);
+                    Cli.redraw(field, false);
                     if(won == 1) {
-                        cli.success("You won!", "Congratulations!");
+                        Cli.success("You won!", "Congratulations!");
                     } else {
-                        cli.error("You lost!", "Better luck next time!");
+                        Cli.error("You lost!", "Better luck next time!");
                     }
                     break;
                 }
 
                 applyWarnings(field);
-                cli.redraw(field);
+                Cli.redraw(field);
                 myTurn = !myTurn;
                 turnCompleted = false;
             }
@@ -216,7 +214,7 @@ public class Game {
             if(enemy)
                 con.getSocket().send(new FWError(FWErrorType.INVALID_MOVE, "Invalid position"));
             else
-                cli.error("Invalid position", "The position must be between 1 and " + getFieldWidth());
+                Cli.error("Invalid position", "The position must be between 1 and " + getFieldWidth());
             return false;
         }
 
@@ -234,7 +232,7 @@ public class Game {
             if(enemy)
                 con.getSocket().send(new FWError(FWErrorType.INVALID_MOVE, "Column is full"));
             else
-                cli.error("Column is full", "The column is full, please choose another one");
+                Cli.error("Column is full", "The column is full, please choose another one");
             return false;
         }
 

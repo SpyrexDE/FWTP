@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch FourWins",
+            "request": "launch",
+            "mainClass": "FourWins",
+            "projectName": "FWTP_b84a0fbf"
+        },
+        {
+            "type": "java",
             "name": "Client",
             "request": "launch",
             "mainClass": "FourWins",

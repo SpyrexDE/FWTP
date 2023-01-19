@@ -11,11 +11,11 @@ public class FWConnection {
     FWSocket socket;
     boolean hosting;
 
-    public FWConnection(Cli cli) {
+    public FWConnection() {
         try {
             this.socket = new FWSocket();
 
-            cli.print("Enter a valid ip if you want to connect to someone, press enter to host: ");
+            Cli.print("Enter a valid ip if you want to connect to someone, press enter to host: ");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String s = br.readLine();
             
@@ -29,11 +29,11 @@ public class FWConnection {
             }
 
         } catch (Exception e) {
-            cli.print("Failed to connect to peer");
+            Cli.error("Failed to connect to peer", "The connection could not be established.");
         }
     }
 
-    public FWConnection(Cli cli, boolean host) {
+    public FWConnection(boolean host) {
         try {
             if(host) {
                 this.socket = new FWSocket();
@@ -45,7 +45,7 @@ public class FWConnection {
                 this.hosting = false;
             }
         } catch (Exception e) {
-            cli.print("Failed to connect to peer");
+            Cli.error("Failed to connect to peer", "The connection could not be established.");
         }
     }
 

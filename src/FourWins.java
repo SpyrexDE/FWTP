@@ -10,7 +10,6 @@ public class FourWins {
 
     public static void main(String[] args) {
         FourWins.args = args;
-        cli = new Cli();
-        game = new Game(cli);
+        game = new Game();
     }
 }

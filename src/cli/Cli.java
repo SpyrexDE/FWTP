@@ -6,24 +6,24 @@ import utils.Ansi;
 
 public class Cli {
 
-    Scanner in = new Scanner(System.in);
+    static Scanner in = new Scanner(System.in);
 
     public Cli() {
         
     }
 
-    public void redraw(int[][] field) {
+    public static void redraw(int[][] field) {
         redraw(field, true);
     }
 
-    public void redraw(int[][] field, boolean draw_warning) {
+    public static void redraw(int[][] field, boolean draw_warning) {
         clearConsole();
 
         drawField(field, draw_warning);
     }
 
     // Get terminal input
-    public String getInput() {
+    public static String getInput() {
         // ◌
         System.out.print(Ansi.Green.colorize("◉") + Ansi.Cyan.colorize(" Your turn 🔢 ➡ "));
         String input = in.nextLine();
@@ -31,11 +31,11 @@ public class Cli {
     }
     
 
-    private void clearConsole() {
+    private static void clearConsole() {
         System.out.print("\033[H\033[2J");
     }
 
-    public void drawField(int[][] field, boolean draw_warning) {
+    public static void drawField(int[][] field, boolean draw_warning) {
         System.out.println("\033[1;36m    ╰•★★ 𝓒𝓸𝓷𝓷𝓮𝓬𝓽 𝓕𝓸𝓾𝓻 ★★•╯    \033[0m");
         System.out.println("\033[1;36m ╭───┬───┬───┬───┬───┬───┬───╮ \033[0m");
         for (int i = 0; i < 6; i++) {
@@ -66,7 +66,7 @@ public class Cli {
     }
     
 
-    public void print(String str) {
+    public static void print(String str) {
         System.out.println(str);
     }
 
