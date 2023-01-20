@@ -13,7 +13,6 @@ import utils.Ansi;
 import java.io.BufferedReader;
 
 public class FWConnection {
-
     FWSocket socket;
     boolean hosting;
 
@@ -38,6 +37,12 @@ public class FWConnection {
                 this.hosting = true;
             }
             else {
+                if (s.startsWith("!")) {
+                    removeFromCachedHosts(Integer.valueOf(s.substring(1)));
+                    System.out.println("Removed " + s.substring(1) + " from cache");
+                    new FWConnection();
+                    return;
+                }
                 try {
                     int index = Integer.parseInt(s);
                     s = getCachedHost(index);
@@ -48,9 +53,7 @@ public class FWConnection {
                 this.hosting = false;
             }
 
-            if(!Arrays.asList(getCachedHosts(-1)).contains(s) && !s.equals("")) {
-                addToCachedHosts(s);
-            }
+            addToCachedHosts(s);
 
         } catch (Exception e) {
             Cli.error("Failed to connect to peer", "The connection could not be established.");
@@ -76,14 +79,12 @@ public class FWConnection {
     public List<String> getCachedHosts(int limit) {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 
-        final String PREF_NAME = "HOSTS_CACHE";
+        String hosts = prefs.get("HOSTS_CACHE", "");
 
-        String propertyValue = prefs.get(PREF_NAME, "");
-
-        if(propertyValue.equals(""))
+        if(hosts.equals(""))
             return new ArrayList<String>();
         
-        List<String> hostsList = new ArrayList<>(Arrays.asList(propertyValue.split("\\|")));
+        List<String> hostsList = new ArrayList<>(Arrays.asList(hosts.split("\\|")));
      
         if (limit == -1)
             return hostsList;
@@ -92,22 +93,24 @@ public class FWConnection {
 
     public String getCachedHost(int index) {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-        final String PREF_NAME = "HOSTS_CACHE";
-        String[] value = prefs.get(PREF_NAME, "").split("\\|");
-        List<String> propertyValue = new ArrayList<>(Arrays.asList(value));
+        String[] hosts = prefs.get("HOSTS_CACHE", "").split("\\|");
+        List<String> hostsList = new ArrayList<>(Arrays.asList(hosts));
         
-        return propertyValue.get(index);
+        return hostsList.get(index);
     }
 
     public void addToCachedHosts(String host) {
         Preferences prefs = Preferences.userNodeForPackage(this.getClass());
         
-        final String PREF_NAME = "HOSTS_CACHE";
         List<String> propertyValue = getCachedHosts(-1);
+        
+        if(propertyValue.contains(host) || host.isEmpty())
+            return;
+
         propertyValue.add(host);
         String newValue = String.join("|", propertyValue);
         
-        prefs.put(PREF_NAME, newValue);
+        prefs.put("HOSTS_CACHE", newValue);
 
         try {
             prefs.sync();
@@ -115,6 +118,23 @@ public class FWConnection {
             e.printStackTrace();
         }
     }
+
+    public void removeFromCachedHosts(int index) {
+        Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+        List<String> propertyValue = getCachedHosts(-1);
+
+        propertyValue.remove(index);
+        String newValue = String.join("|", propertyValue);
+        
+        prefs.put("HOSTS_CACHE", newValue);
+
+        try {
+            prefs.sync();
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public FWSocket getSocket() {
         return this.socket;
