@@ -93,7 +93,7 @@ public class FWSocket {
                     return;
                 }
             } else {
-                this.send(new FWError(FWErrorType.UNSUPPORTED_VERSION, "Unsupported FWTP version"));
+                this.send(new FWError(FWErrorType.UNSUPPORTED_VERSION, "Handshake expected, not received"));
                 this.disconnect();
                 return;
             }
