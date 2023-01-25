@@ -63,8 +63,10 @@ public class FWSocket {
             this.connected = true;
         } catch (UnknownHostException e) {
             Cli.error("Unknown host", "The host you tried to connect to is unknown");
+            System.exit(1);
         } catch (IOException e) {
             Cli.error("Connection failed", "The connection to the host failed");
+            System.exit(1);
         }
     }
 
@@ -102,6 +104,7 @@ public class FWSocket {
             this.connected = true;
         } catch (Exception e) {
             Cli.error("Connection failed", "The connection to the host failed");
+            System.exit(1);
         }
     }
     

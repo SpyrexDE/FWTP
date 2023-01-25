@@ -57,6 +57,7 @@ public class FWConnection {
 
         } catch (Exception e) {
             Cli.error("Failed to connect to peer", "The connection could not be established.");
+            System.exit(1);
         }
     }
 
@@ -73,6 +74,7 @@ public class FWConnection {
             }
         } catch (Exception e) {
             Cli.error("Failed to connect to peer", "The connection could not be established.");
+            System.exit(1);
         }
     }
 
